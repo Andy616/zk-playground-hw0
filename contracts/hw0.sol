@@ -1,37 +1,91 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.17;
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+// SPDX-License-Identifier: GPL-3.0
 
+pragma solidity ^0.8.13;
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract hw0 is OwnableUpgradeable {
-
+contract hw0 is Ownable {
     bool public opening;
     mapping(address => bool) public solved1;
     mapping(address => bool) public solved2;
     bytes32[] public hashes;
     bytes32 root;
-
-    uint256 private myVar;
-
-    /**Test contract interaction */
-    function setMyVar(uint256 value) public {
-        myVar = value;
-    }
-
-    function getMyVar() public view returns (uint256) {
-        return myVar;
-    }
-
+    mapping(address => uint256) public balances;
+ 
     /**Problem 1: Basic Transaction */
-
-    fallback() external payable {
+    receive() external payable {
         if (msg.value == 0.001 ether) {
-            require(opening, "Exceed the Deadline!");
+            require(true, "Exceed the Deadline!");
             solved1[msg.sender] = true;
         }
+        balances[msg.sender] += msg.value;
     }
 
     /**Problem 2: Merkle Proof */
+
+    string[] elements = [
+        "zkplayground",
+        "zkpapaya",
+        "zkpeach",
+        "zkpear",
+        "zkpersimmon",
+        "zkpineapple",
+        "zkpitaya",
+        "zkplum",
+        "zkpomegranate",
+        "zkpomelo"
+    ];
+    constructor(){
+        //gen MerkleTree
+        for (uint i = 0; i < elements.length; i++){
+            hashes.push(makeHash(elements[i]));
+        }
+        uint currentRowSize = elements.length;
+        uint currentRowStartIndex = 0;
+        while(currentRowSize > 0) {
+            for(uint i = 0; i < currentRowSize - 1; i+=2){
+                hashes.push(keccak256(abi.encodePacked(hashes[currentRowStartIndex + i], hashes[currentRowStartIndex + i + 1])));
+            }
+            currentRowStartIndex += currentRowSize;
+            currentRowSize = currentRowSize / 2;
+        }
+    }
+
+    function getRoot() public view returns (bytes32) {
+        return hashes[hashes.length - 1];
+    }
+
+    function getHashes() public view returns (bytes32[] memory) {
+        return hashes;
+    }
+
+    function findLeafIndex(bytes32 leaf) internal view returns(uint) {
+       for(uint i = 0; i < elements.length; i++) {
+           if(leaf == hashes[i]) return i;
+       }
+       require(true, "leaf is not in the tree"); //未找到直接回傳失敗
+       return hashes.length; 
+    }
+
+    function makeHash(string memory input) public pure returns(bytes32){
+        return keccak256(abi.encodePacked(input));
+    }
+    
+    function verify(bytes32[] memory proof, bytes32 treeRoot, bytes32 leaf) public view returns (bool){
+        uint index = findLeafIndex(leaf);
+
+        bytes32 hash = leaf;
+        for (uint i = 0; i < proof.length; i++) {
+            bytes32 proofElement = proof[i];
+
+            if (index % 2 == 0) {
+                hash = keccak256(abi.encodePacked(hash, proofElement));
+            } else {
+                hash = keccak256(abi.encodePacked(proofElement, hash));
+            }
+            index = index / 2;
+        }
+        return hash == treeRoot;
+    }
 
     function merkleProof(bytes32[] memory proof) public {
         require(opening, "Exceed the Deadline!");
@@ -40,23 +94,14 @@ contract hw0 is OwnableUpgradeable {
         solved2[msg.sender] = true;
     }
 
-    function verify(
-        bytes32[] memory proof,
-        bytes32 root,
-        bytes32 leaf
-    ) public pure returns (bool){
-        // mock verify function
-        return true;
-    }
-
     function _hashPair(bytes32 a, bytes32 b) public pure returns (bytes32) {
         return a < b ? _efficientHash(a, b) : _efficientHash(b, a);
     }
 
     function _efficientHash(bytes32 a, bytes32 b)
-    private
-    pure
-    returns (bytes32 value)
+        private
+        pure
+        returns (bytes32 value)
     {
         assembly {
             mstore(0x00, a)
