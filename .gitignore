@@ -1,0 +1,22 @@
+build/*
+node_modules
+coverage
+coverage.json
+compose/data/
+
+# Hardhat files
+cache
+artifacts
+typechain
+typechain-types
+
+dist
+yarn.lock
+
+.idea
+
+# https://docs.openzeppelin.com/cli/2.8/configuration#configuration-files-in-version-control
+# OpenZeppelin
+.openzeppelin/dev-*.json
+.openzeppelin/.session
+.openzeppelin

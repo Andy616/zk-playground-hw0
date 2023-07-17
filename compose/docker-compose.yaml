@@ -1,0 +1,19 @@
+name: ethereum
+
+services:
+  node:
+    container_name: "ethereum-node"
+    image: trufflesuite/ganache:v7.8.0
+    restart: on-failure
+    ports:
+      - "8545:8545"
+    volumes:
+      - ./data:/ganache_data
+      - ./network.entrypoint.sh:/app/entrypoint.sh
+    entrypoint: [ "/app/entrypoint.sh" ]
+    healthcheck:
+      test: wget -qSO- --post-data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' http://localhost:8545 || exit 1
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
