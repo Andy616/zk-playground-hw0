@@ -66,7 +66,8 @@ export class ContractService {
 
     public async getMyVar(contractAddress: string): Promise<string> {
         const contract = await this.getContractByAddress(contractAddress);
-        return contract.getMyVar();
+        const result: bigint = await contract.getMyVar();
+        return result.toString();
     }
 
     public async setMyVar(contractAddress: string, value: number): Promise<null> {
