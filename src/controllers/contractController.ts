@@ -22,13 +22,18 @@ export class ContractController {
     }
 
 
-    public async _hashPair(req: Request, res: Response) {
+    public async root(req: Request, res: Response) {
         const contractAddress: string = req.body.contract_address;
-        const a: string = req.body.a;
-        const b: string = req.body.b;
 
         res.json(
-            await contractService._hashPair(contractAddress, a, b)
+            await contractService.root(contractAddress)
+        );
+    }
+    public async proofRoot(req: Request, res: Response) {
+        const contractAddress: string = req.body.contract_address;
+
+        res.json(
+            await contractService.proofRoot(contractAddress)
         );
     }
 
@@ -47,14 +52,6 @@ export class ContractController {
 
         res.json(
             await contractService.merkleProof(contractAddress, proof)
-        );
-    }
-
-    public async opening(req: Request, res: Response) {
-        const contractAddress: string = req.body.contract_address;
-
-        res.json(
-            await contractService.opening(contractAddress)
         );
     }
 
@@ -83,7 +80,7 @@ export class ContractController {
             await contractService.solved2(contractAddress, address)
         );
     }
-
+/*
     public async verify(req: Request, res: Response) {
         const contractAddress: string = req.body.contract_address;
         const proof: string[] = req.body.proof;
@@ -92,6 +89,22 @@ export class ContractController {
 
         res.json(
             await contractService.verify(contractAddress, proof, root, leaf)
+        );
+    }*/
+
+    public async computeRootV0(req: Request, res: Response) {
+        const contractAddress: string = req.body.contract_address;
+
+        res.json(
+            await contractService.computeRootV0(contractAddress)
+        );
+    }
+
+    public async merkleProofAns(req: Request, res: Response) {
+        const contractAddress: string = req.body.contract_address;
+
+        res.json(
+            await contractService.merkleProofAns(contractAddress)
         );
     }
 

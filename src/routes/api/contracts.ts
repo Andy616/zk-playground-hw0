@@ -13,20 +13,18 @@ contractRouter.post("/set_my_var", routeHandler(async (req, res) =>
     contractController.setMyVar(req, res))
 )
 
-contractRouter.post("/_hash_pair", routeHandler(async (req, res) =>
-    contractController._hashPair(req, res))
-)
-
 contractRouter.post("/hashes", routeHandler(async (req, res) =>
     contractController.hashes(req, res))
+)
+contractRouter.post("/view/root", routeHandler(async (req, res) =>
+    contractController.root(req, res))
+)
+contractRouter.post("/view/proof_root", routeHandler(async (req, res) =>
+    contractController.proofRoot(req, res))
 )
 
 contractRouter.post("/merkle_proof", routeHandler(async (req, res) =>
     contractController.merkleProof(req, res))
-)
-
-contractRouter.post("/opening", routeHandler(async (req, res) =>
-    contractController.opening(req, res))
 )
 
 contractRouter.post("/owner", routeHandler(async (req, res) =>
@@ -41,6 +39,15 @@ contractRouter.post("/solved2", routeHandler(async (req, res) =>
     contractController.solved2(req, res))
 )
 
+/*
 contractRouter.post("/verify", routeHandler(async (req, res) =>
     contractController.verify(req, res))
+)*/
+
+contractRouter.post("/tx/compute_root_v0", routeHandler(async (req, res) =>
+    contractController.computeRootV0(req, res))
 )
+contractRouter.post("/tx/merkle_proof_ans", routeHandler(async (req, res) =>
+    contractController.merkleProofAns(req, res))
+)
+
