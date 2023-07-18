@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
 
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract hw0 is Ownable {
@@ -43,18 +43,20 @@ contract hw0 is Ownable {
         uint currentRowStartIndex = 0;
         while(currentRowSize > 0) {
             for(uint i = 0; i < currentRowSize - 1; i+=2){
-                hashes.push(keccak256(abi.encodePacked(hashes[currentRowStartIndex + i], hashes[currentRowStartIndex + i + 1])));
+                hashes.push(_efficientHash(hashes[currentRowStartIndex + i], hashes[currentRowStartIndex + i + 1]));
             }
             currentRowStartIndex += currentRowSize;
             currentRowSize = currentRowSize / 2;
         }
     }
 
-    function getRoot() public view returns (bytes32) {
+    /** verify Tree root */
+    function getRoot() private view returns (bytes32) {
         return hashes[hashes.length - 1];
     }
-
-    function getHashes() public view returns (bytes32[] memory) {
+    
+    /** verify Tree */
+    function getHashes() private view returns (bytes32[] memory) {
         return hashes;
     }
 
@@ -62,7 +64,7 @@ contract hw0 is Ownable {
        for(uint i = 0; i < elements.length; i++) {
            if(leaf == hashes[i]) return i;
        }
-       require(true, "leaf is not in the tree"); //未找到直接回傳失敗
+       require(true, "leaf is not in the tree");
        return hashes.length; 
     }
 
@@ -74,13 +76,13 @@ contract hw0 is Ownable {
         uint index = findLeafIndex(leaf);
 
         bytes32 hash = leaf;
+        bytes32 proofElement;
         for (uint i = 0; i < proof.length; i++) {
-            bytes32 proofElement = proof[i];
-
+            proofElement = proof[i];
             if (index % 2 == 0) {
-                hash = keccak256(abi.encodePacked(hash, proofElement));
+                hash = _efficientHash(hash, proofElement);
             } else {
-                hash = keccak256(abi.encodePacked(proofElement, hash));
+                hash = _efficientHash(proofElement, hash);
             }
             index = index / 2;
         }
@@ -97,7 +99,8 @@ contract hw0 is Ownable {
     function _hashPair(bytes32 a, bytes32 b) public pure returns (bytes32) {
         return a < b ? _efficientHash(a, b) : _efficientHash(b, a);
     }
-
+    
+    /** efficient keccak256(abi.encodePacked(a, b)) */
     function _efficientHash(bytes32 a, bytes32 b)
         private
         pure
