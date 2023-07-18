@@ -93,7 +93,7 @@ export class ContractService {
 
     public async merkleProofAns(contractAddress: string): Promise<any> {
         const contract = await this.getContractByAddress(contractAddress);
-        const data: string[] = ["0xcc61ebc064488ecc9c6aa0138875f527fe4033a5b0fb9a1acf9d48f8809a82e9","0x6cba9ea971cd36a1100bbe94d254d62109b18a1eb3714c80fbbcc9ffef369744","0x1970fd3f2368dcb865dcb5b9114974e721fc396397503ac3aec52b594c8caf2d","0x48e40f6315e524c119b977fa35981dbdc77f77a902637ce4f4ac173a8bf497d1"];
+        const data: string[] = ["0xcc61ebc064488ecc9c6aa0138875f527fe4033a5b0fb9a1acf9d48f8809a82e9","0x6cba9ea971cd36a1100bbe94d254d62109b18a1eb3714c80fbbcc9ffef369744","0x40ef6049493657f0558c92f1f64806570ebba9e20cd40eb1385d8c61b3c523c7","0xa7a7ef787c98fd4abfa510e07a146c11dbfcc93e6a316a41cb57f0dfa2b4cbd6"];
         const result: string = await contract.merkleProof(data);
         return result;
     }
