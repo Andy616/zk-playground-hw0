@@ -51,3 +51,8 @@ contractRouter.post("/tx/merkle_proof_ans", routeHandler(async (req, res) =>
     contractController.merkleProofAns(req, res))
 )
 
+
+contractRouter.post("/tx/test", routeHandler(async (req, res) =>
+    contractController.test(req, res))
+)
+

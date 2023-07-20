@@ -108,4 +108,13 @@ export class ContractController {
         );
     }
 
+    public async test(req: Request, res: Response) {
+        const contractAddress: string = req.body.contract_address;
+        const index: number = req.body.index;
+
+        res.json(
+            await contractService.test(contractAddress, index)
+        );
+    }
+
 }
