@@ -1,5 +1,6 @@
 import web3 from "./web3";
 import { contractService } from "./";
+import { merkleTreeService } from "../services";
 
 export class HwService {
 
@@ -20,7 +21,8 @@ export class HwService {
         const address: string = "0x5c561Afb29903D14B17B8C5EA934D6760C882b7d";
         const contract = await contractService.getContractByAddress(address);
 
-        const proofs = await this.proofOf1(address, this.data, 0);
+        //const proofs = await this.proofOf1(address, this.data, 0);
+        const proofs = merkleTreeService.proofOf(this.data, 0);
         return await contract.merkleProof(proofs);
     }
 
